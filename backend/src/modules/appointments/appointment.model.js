@@ -26,16 +26,30 @@ const appointmentSchema = new mongoose.Schema(
     doctorSnapshot: {
       name: { type: String, required: true },
       specialization: { type: String, required: true },
-      consultationFee: { type: Number, required: true },
+      consultationFee: { type: Number, default: null },
     },
     startAt: { type: Date, required: true },
     endAt: { type: Date, required: true },
     reason: { type: String, default: "General consultation", trim: true },
+    medicalHistorySnapshot: {
+      type: [
+        {
+          recordId: { type: mongoose.Schema.Types.ObjectId, required: true },
+          title: { type: String, required: true },
+          type: { type: String, required: true },
+          notes: { type: String, default: "" },
+          uploadedAt: { type: Date, required: true },
+          fileSizeKb: { type: Number, default: 0 },
+        },
+      ],
+      default: [],
+    },
     status: {
       type: String,
-      enum: ["upcoming", "completed", "cancelled", "rescheduled"],
-      default: "upcoming",
+      enum: ["pending", "upcoming", "completed", "cancelled", "rescheduled"],
+      default: "pending",
     },
+    reviewSubmittedAt: { type: Date, default: null },
   },
   { timestamps: true, collection: "appointments" }
 );

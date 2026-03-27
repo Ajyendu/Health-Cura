@@ -41,7 +41,9 @@ const UserState = (props) => {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {}
+    } catch (error) {
+      console.error("UserState logout failed:", error);
+    }
     setUser(null);
     authLogout();
   };
@@ -51,7 +53,10 @@ const UserState = (props) => {
     try {
       const payload = await profileApi.getProfile();
       setUser(payload.data);
-    } catch {}
+    } catch (error) {
+      console.error("UserState getProfile failed:", error);
+      setUser(null);
+    }
   };
 
   // ✅ REGISTER

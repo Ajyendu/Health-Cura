@@ -5,7 +5,6 @@ import Help from "./Help";
 import Search from "./Search";
 import Register from "./Register";
 import Profiles from "./Profiles";
-import { docprofile } from "./Profiles";
 
 function Body({ CurrentPage }) {
   return (

@@ -3,11 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "start": "npm run dev",
     "frontend": "npm --prefix frontend run dev",
     "backend": "npm --prefix backend run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
     "build": "npm --prefix frontend run build",
-    "lint": "npm --prefix frontend run lint"
+    "lint": "npm --prefix frontend run lint",
+    "test:backend": "npm --prefix backend test",
+    "seed:doctors": "npm --prefix backend run seed:doctors",
+    "seed:nearby-doctors": "npm --prefix backend run seed:nearby-doctors",
+    "verify": "npm run lint && npm run build && npm run test:backend"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

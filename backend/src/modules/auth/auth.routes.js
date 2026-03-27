@@ -19,6 +19,7 @@ const registerValidators = [
   body("name").isString().trim().notEmpty(),
   body("email").isEmail(),
   body("password").isLength({ min: 6 }),
+  body("specialization").optional().isString().trim().notEmpty(),
 ];
 
 const loginValidators = [body("email").isEmail(), body("password").isString()];
@@ -32,7 +33,7 @@ const sanitizeAuthUser = (doc) => ({
 
 const registerFactory = (role) =>
   asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, specialization } = req.body;
     const Model = role === "doctor" ? Doctor : User;
     const existing = await Model.findOne({ email: email.toLowerCase() });
     if (existing) {
@@ -56,7 +57,9 @@ const registerFactory = (role) =>
               },
             ],
           }
-        : {}),
+        : {
+            specialization: specialization || "",
+          }),
     });
 
     const token = signToken({ id: created._id, role });
@@ -103,6 +106,16 @@ router.post(
   asyncHandler(async (req, res) => {
     clearAuthCookies(res);
     res.json({ success: true, message: "Logged out" });
+  })
+);
+
+router.post(
+  "/refresh",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const token = signToken({ id: req.auth.id, role: req.auth.role });
+    setRoleCookie(res, req.auth.role, token);
+    res.json({ success: true, data: { role: req.auth.role } });
   })
 );
 

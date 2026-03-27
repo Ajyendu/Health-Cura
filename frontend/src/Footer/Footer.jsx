@@ -1,10 +1,12 @@
+import "./Footer.css";
+
 function Footer() {
   return (
-    <div className="container">
-      <footer className="py-3 my-4">
-        <p className="text-center text-body-secondary">© 2025 Company, Inc</p>
-      </footer>
-    </div>
+    <footer className="app-footer">
+      <div className="app-footer-inner">
+        <p className="mb-0 text-muted">© 2026 CareConnect. Built for modern healthcare booking.</p>
+      </div>
+    </footer>
   );
 }
 export default Footer;

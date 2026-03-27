@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { appointmentsApi, doctorsApi, profileApi } from "@/shared/api/services";
 import { useUserAuth } from "@/Body/Auth/User/AuthContext";
+import "./doctor-profile.css";
 
 const DoctorProfilePage = () => {
-  const { doctorId } = useParams();
+  const { doctorId, id } = useParams();
+  const resolvedDoctorId = doctorId || id;
   const { isAuthenticated } = useUserAuth();
   const [doctor, setDoctor] = useState(null);
   const [date, setDate] = useState("");
@@ -14,14 +16,18 @@ const DoctorProfilePage = () => {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [reason, setReason] = useState("General consultation");
   const [message, setMessage] = useState("");
+  const apiOrigin = (
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1"
+  ).replace(/\/api\/v1\/?$/, "");
 
   useEffect(() => {
     const run = async () => {
-      const payload = await doctorsApi.getById(doctorId);
+      if (!resolvedDoctorId) return;
+      const payload = await doctorsApi.getById(resolvedDoctorId);
       setDoctor(payload.data);
     };
     run().catch((err) => setMessage(err.message));
-  }, [doctorId]);
+  }, [resolvedDoctorId]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -38,7 +44,7 @@ const DoctorProfilePage = () => {
   const fetchSlots = async () => {
     if (!date) return;
     try {
-      const payload = await doctorsApi.slots(doctorId, date);
+      const payload = await doctorsApi.slots(resolvedDoctorId, date);
       setSlots(payload.data || []);
     } catch (err) {
       setMessage(err.message);
@@ -52,7 +58,7 @@ const DoctorProfilePage = () => {
     }
     try {
       await appointmentsApi.create({
-        doctorId,
+        doctorId: resolvedDoctorId,
         patientProfileId: selectedProfile,
         startAt: selectedSlot,
         reason,
@@ -67,50 +73,82 @@ const DoctorProfilePage = () => {
   if (!doctor) return <p style={{ padding: "2rem" }}>Loading doctor...</p>;
 
   return (
-    <div className="container py-4">
-      <h2>{doctor.name}</h2>
-      <p className="mb-1">Specialization: {doctor.specialization}</p>
-      <p className="mb-1">Experience: {doctor.yearsExperience} years</p>
-      <p className="mb-1">Consultation Fee: INR {doctor.consultationFee}</p>
-      <p className="mb-3">
-        Ratings: {doctor.ratingAverage?.toFixed(1) || "0.0"} ({doctor.ratingCount || 0})
-      </p>
-
-      <h4>Available Booking Slots</h4>
-      <div className="row g-2 align-items-end mb-3">
-        <div className="col-md-4">
-          <label className="form-label">Date</label>
-          <input
-            type="date"
-            className="form-control"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+    <div className="app-page doctor-profile-shell">
+      <div className="doctor-profile-hero p-3 p-md-4 mb-3">
+        <div className="d-flex gap-3 align-items-center flex-wrap mb-3">
+          <img
+            src={
+              doctor.photoUrl
+                ? `${apiOrigin}${doctor.photoUrl}`
+                : "https://via.placeholder.com/140x140?text=Doctor"
+            }
+            alt={doctor.name}
+            className="doctor-profile-avatar"
           />
+          <div>
+            <h3 className="mb-1">{doctor.name}</h3>
+            <p className="mb-1 text-muted">{doctor.specialization}</p>
+            <p className="mb-0 text-muted">{doctor.hospital || "Healthcare Specialist"}</p>
+          </div>
         </div>
-        <div className="col-md-3">
-          <button className="btn btn-primary" onClick={fetchSlots}>
-            Check Slots
-          </button>
+
+        <div className="doctor-profile-stat-grid">
+          <div className="doctor-profile-stat">
+            <strong>{doctor.yearsExperience || 0}+ yrs</strong>
+            Experience
+          </div>
+          <div className="doctor-profile-stat">
+            <strong>INR {doctor.consultationFee || 0}</strong>
+            Session Fee
+          </div>
+          <div className="doctor-profile-stat">
+            <strong>{doctor.ratingAverage?.toFixed(1) || "0.0"}</strong>
+            Rating
+          </div>
+          <div className="doctor-profile-stat">
+            <strong>{doctor.ratingCount || 0}</strong>
+            Reviews
+          </div>
         </div>
       </div>
 
-      <div className="d-flex flex-wrap gap-2 mb-3">
-        {slots.map((slot) => (
-          <button
-            key={slot.startAt}
-            disabled={!slot.isAvailable}
-            onClick={() => setSelectedSlot(slot.startAt)}
-            className={`btn btn-sm ${
-              selectedSlot === slot.startAt ? "btn-primary" : "btn-outline-secondary"
-            }`}
-          >
-            {slot.label} {slot.isAvailable ? "" : "(Booked)"}
-          </button>
-        ))}
+      <div className="card border-0 shadow-sm p-3 mb-3">
+        <h5 className="mb-2">Available Booking Slots</h5>
+        <div className="row g-2 align-items-end mb-2">
+          <div className="col-md-4">
+            <label className="form-label">Date</label>
+            <input
+              type="date"
+              className="form-control"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+          <div className="col-md-3">
+            <button className="btn btn-primary" onClick={fetchSlots}>
+              Check Slots
+            </button>
+          </div>
+        </div>
+
+        <div className="doctor-slot-list mb-1">
+          {slots.map((slot) => (
+            <button
+              key={slot.startAt}
+              disabled={!slot.isAvailable}
+              onClick={() => setSelectedSlot(slot.startAt)}
+              className={`btn btn-sm ${
+                selectedSlot === slot.startAt ? "btn-primary" : "btn-outline-secondary"
+              }`}
+            >
+              {slot.label} {slot.isAvailable ? "" : "(Booked)"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {isAuthenticated ? (
-        <div className="card p-3">
+        <div className="card border-0 shadow-sm p-3">
           <h5>Book Appointment</h5>
           <div className="row g-2">
             <div className="col-md-4">

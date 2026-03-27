@@ -1,0 +1,95 @@
+.doctor-search-hero {
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f8fbff 0%, #edf6ff 100%);
+}
+
+.doctor-search-chip-wrap {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.doctor-search-chip {
+  border-radius: 999px;
+  border: 1px solid #d7e1f3;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.8rem;
+  white-space: nowrap;
+}
+
+.doctor-search-chip.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.doctor-search-map-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.doctor-search-map-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  border: 1px solid #cbd5e1;
+}
+
+.doctor-card-modern {
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.doctor-card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(15, 23, 42, 0.08);
+}
+
+.doctor-card-modern.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.doctor-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+}
+
+.doctor-meta {
+  font-size: 0.84rem;
+  color: #475569;
+}
+
+.doctor-stats-mini {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.4rem;
+}
+
+.doctor-stats-mini .item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+  font-size: 0.74rem;
+  color: #475569;
+}
+
+.doctor-stats-mini .value {
+  display: block;
+  font-weight: 700;
+  color: #0f172a;
+}

@@ -1,9 +1,8 @@
 const path = require("path");
 const dotenv = require("dotenv");
 
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
+const envPath = path.resolve(__dirname, "../../.env");
+dotenv.config({ path: envPath });
 
 const toNumber = (value, fallback) => {
   const parsed = Number(value);

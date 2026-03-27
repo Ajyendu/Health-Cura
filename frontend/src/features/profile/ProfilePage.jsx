@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { profileApi } from "@/shared/api/services";
+import ConsoleLayout from "@/shared/layout/ConsoleLayout";
 
 const emptyPatient = { name: "", age: "", gender: "other", relation: "", contact: "" };
 
@@ -7,6 +8,7 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [patientDraft, setPatientDraft] = useState(emptyPatient);
   const [message, setMessage] = useState("");
+  const [tab, setTab] = useState("personal");
 
   const load = async () => {
     try {
@@ -49,10 +51,17 @@ const ProfilePage = () => {
   if (!profile) return <p style={{ padding: "2rem" }}>Loading profile...</p>;
 
   return (
-    <div className="container py-4">
-      <h2>My Profile</h2>
+    <ConsoleLayout title="My Profile" subtitle="Manage personal and family information.">
+      <div className="hc-tab-row mb-3">
+        <button className={`hc-tab-pill ${tab === "personal" ? "active" : ""}`} onClick={() => setTab("personal")}>
+          Personal Info
+        </button>
+        <button className={`hc-tab-pill ${tab === "family" ? "active" : ""}`} onClick={() => setTab("family")}>
+          Family Profiles
+        </button>
+      </div>
       {message && <div className="alert alert-info">{message}</div>}
-      <div className="card p-3 mb-3">
+      {tab === "personal" && <div className="hc-panel mb-3">
         <div className="row g-2">
           <div className="col-md-4">
             <input
@@ -96,9 +105,9 @@ const ProfilePage = () => {
             Save Profile
           </button>
         </div>
-      </div>
+      </div>}
 
-      <div className="card p-3 mb-3">
+      {tab === "family" && <div className="hc-panel mb-3">
         <h5>Add Family Member</h5>
         <div className="row g-2">
           <div className="col-md-3">
@@ -151,9 +160,9 @@ const ProfilePage = () => {
             Add Profile
           </button>
         </div>
-      </div>
+      </div>}
 
-      <div className="card p-3">
+      {tab === "family" && <div className="hc-panel">
         <h5>Patient Profiles</h5>
         <div className="d-grid gap-2">
           {profile.patientProfiles?.map((member) => (
@@ -173,8 +182,8 @@ const ProfilePage = () => {
             <p className="text-muted">No patient profiles added yet.</p>
           )}
         </div>
-      </div>
-    </div>
+      </div>}
+    </ConsoleLayout>
   );
 };
 

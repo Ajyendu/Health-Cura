@@ -14,6 +14,7 @@ const availabilitySchema = new mongoose.Schema(
     dayOfWeek: { type: Number, min: 0, max: 6, required: true },
     start: { type: String, required: true }, // HH:mm
     end: { type: String, required: true }, // HH:mm
+    capacity: { type: Number, min: 1, max: 100, required: true },
   },
   { _id: false }
 );
@@ -32,12 +33,19 @@ const doctorSchema = new mongoose.Schema(
     password: { type: String, required: true },
     specialization: {
       type: String,
-      required: true,
-      default: "General Physician",
+      default: "",
       trim: true,
     },
-    yearsExperience: { type: Number, min: 0, default: 1 },
-    consultationFee: { type: Number, min: 0, default: 500 },
+    yearsExperience: { type: Number, min: 0, default: null },
+    consultationFee: { type: Number, min: 0, default: null },
+    licenseIssuedAt: { type: Date, default: null },
+    bio: { type: String, default: "", trim: true },
+    qualifications: { type: String, default: "", trim: true },
+    licenseNumber: { type: String, default: "", trim: true },
+    contactPhone: { type: String, default: "", trim: true },
+    clinicAddress: { type: String, default: "", trim: true },
+    languages: { type: [String], default: [] },
+    photoUrl: { type: String, default: "" },
     hospital: { type: String, default: "", trim: true },
     locationName: { type: String, default: "", trim: true },
     location: {
@@ -48,28 +56,42 @@ const doctorSchema = new mongoose.Schema(
       },
       coordinates: {
         type: [Number],
-        default: [77.5946, 12.9716], // lng, lat
+        default: undefined,
       },
     },
-    slotDurationMinutes: { type: Number, min: 5, max: 120, default: 30 },
+    slotDurationMinutes: { type: Number, min: 5, max: 120, default: null },
     availabilityWeekly: {
       type: [availabilitySchema],
-      default: [
-        { dayOfWeek: 1, start: "09:00", end: "17:00" },
-        { dayOfWeek: 2, start: "09:00", end: "17:00" },
-        { dayOfWeek: 3, start: "09:00", end: "17:00" },
-        { dayOfWeek: 4, start: "09:00", end: "17:00" },
-        { dayOfWeek: 5, start: "09:00", end: "17:00" },
-      ],
+      default: [],
     },
     ratingAverage: { type: Number, min: 0, max: 5, default: 0 },
     ratingCount: { type: Number, min: 0, default: 0 },
     reviews: { type: [reviewSchema], default: [] },
+    verified: { type: Boolean, default: false },
   },
   { timestamps: true, collection: "doctors" }
 );
 
+doctorSchema.pre("save", function computeExperienceFromLicense(next) {
+  if (!this.verified || !this.licenseIssuedAt) {
+    this.yearsExperience = null;
+    return next();
+  }
+  const now = new Date();
+  const issued = new Date(this.licenseIssuedAt);
+  let years = now.getFullYear() - issued.getFullYear();
+  const monthDiff = now.getMonth() - issued.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < issued.getDate())) {
+    years -= 1;
+  }
+  this.yearsExperience = Math.max(0, years);
+  next();
+});
+
 doctorSchema.index({ specialization: 1 });
-doctorSchema.index({ location: "2dsphere" });
+doctorSchema.index(
+  { location: "2dsphere" },
+  { partialFilterExpression: { "location.coordinates.1": { $exists: true } } }
+);
 
 module.exports = mongoose.model("DoctorV1", doctorSchema);

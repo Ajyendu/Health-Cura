@@ -4,7 +4,7 @@ import "@/Header/Header.css";
 import UserState from "@/Context/User/UserState";
 import Header from "@/Header/Header";
 import Footer from "@/Footer/Footer";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "@/Body/Home";
 import Login from "@/Body/Loginpage";
 import Register from "@/Body/Register";
@@ -18,17 +18,22 @@ import RoleRedirect from "@/Body/Auth/RoleRedirect";
 import { RequireDoctor, RequireUser } from "@/shared/auth/guards";
 import DoctorSearchPage from "@/features/doctor-search/DoctorSearchPage";
 import DoctorProfilePage from "@/features/doctor-profile/DoctorProfilePage";
+import DoctorAccountProfilePage from "@/features/doctor-profile/DoctorAccountProfilePage";
 import UserAppointmentsPage from "@/features/appointments/UserAppointmentsPage";
 import DoctorDashboardPage from "@/features/appointments/DoctorDashboardPage";
 import ProfilePage from "@/features/profile/ProfilePage";
 import RecordsPage from "@/features/records/RecordsPage";
 
 function App() {
+  const location = useLocation();
+  const isAuthPage =
+    location.pathname.startsWith("/login") || location.pathname.startsWith("/register");
+
   return (
     <>
       <UserState>
         <DoctorState>
-          <Header />
+          {!isAuthPage && <Header />}
           <main>
             <Routes>
               <Route path="/home" element={<Home />} />
@@ -55,6 +60,14 @@ function App() {
                 }
               />
               <Route path="/doctors/:doctorId" element={<DoctorProfilePage />} />
+              <Route
+                path="/doctor/profile"
+                element={
+                  <RequireDoctor>
+                    <DoctorAccountProfilePage />
+                  </RequireDoctor>
+                }
+              />
               <Route path="/search" element={<DoctorSearchPage />} />
               <Route
                 path="/profile"
@@ -77,7 +90,7 @@ function App() {
               <Route path="/help" element={<Help />} />
             </Routes>
           </main>
-          <Footer />
+          {!isAuthPage && <Footer />}
         </DoctorState>
       </UserState>
     </>

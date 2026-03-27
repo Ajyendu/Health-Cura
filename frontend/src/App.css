@@ -1,94 +1,15 @@
 #root {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+main {
+  min-height: calc(100vh - 136px);
+}
+
+.app-page {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-.home-icon:hover {
-  transform: scale(1.5);
-}
-.home-icon {
-  transition: transform 0.2s ease-in-out;
-}
-
-.search-icon:hover {
-  transform: scale(1.5);
-}
-.search-icon {
-  transition: transform 0.2s ease-in-out;
-}
-.help-icon:hover {
-  transform: scale(1.5);
-}
-.help-icon {
-  transition: transform 0.2s ease-in-out;
-}
-.appointment-icon:hover:hover {
-  transform: scale(1.5);
-}
-.appointment-icon {
-  transition: transform 0.2s ease-in-out;
-}
-
-.outercard {
-  padding: 5px;
-  margin: 9px;
-  display: inline-block;
-  position: relative;
-  direction: ltr;
-  width: 280px;
-  height: 400px;
-  border: 2px solid black;
-  overflow: hidden;
-}
-
-.profiles {
-  margin: 10px;
-  display: flex;
-  max-width: 1280px;
-  max-height: 1300px;
-  flex-wrap: wrap;
-
-  justify-content: flex-start;
-}
-.docphoto {
-  border: 1px solid black;
-  height: 150px;
+  padding: 1.25rem 1rem;
 }

@@ -39,7 +39,9 @@ export const DoctorAuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {}
+    } catch (error) {
+      console.error("Doctor logout failed:", error);
+    }
     setDoctor(null);
     setIsAuthenticated(false);
   };

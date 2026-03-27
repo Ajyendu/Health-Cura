@@ -20,7 +20,7 @@ export const UserAuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setUser(null);
       }
-    } catch (err) {
+    } catch {
       setIsAuthenticated(false);
       setUser(null);
     } finally {
@@ -40,7 +40,9 @@ export const UserAuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {}
+    } catch (error) {
+      console.error("User logout failed:", error);
+    }
     setUser(null);
     setIsAuthenticated(false);
   };

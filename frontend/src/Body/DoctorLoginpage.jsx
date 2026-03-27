@@ -2,15 +2,9 @@ import React, { useContext, useEffect, useState } from "react";
 import DoctorContext from "@/Context/Doctor/DoctorContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useDoctorAuth } from "@/Body/Auth/Doctor/AuthContext";
+import "./Login.css";
 
 const initialDoctorState = { email: "", password: "" };
-const containerStyle = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-};
-const cardWrapperStyle = { width: "35vw" };
 
 const DoctorLoginpage = () => {
   const { login } = useContext(DoctorContext);
@@ -50,19 +44,21 @@ const DoctorLoginpage = () => {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div style={containerStyle}>
-      <div style={cardWrapperStyle}>
-        <div className="modal-content rounded-4 shadow">
-          <div className="modal-header p-5 pb-4 border-bottom-0 justify-content-center">
-            <h1 className="fw-bold fs-2">Doctor Login</h1>
-          </div>
+    <div className="auth-shell-bg">
+      <div className="auth-shell-card">
+        <section className="auth-shell-hero">
+          <h2>CareConnect Doctor</h2>
+          <p>Manage schedule, consult patients, and update your complete profile.</p>
+        </section>
 
-          <div className="modal-body p-5 pt-0">
-            <form onSubmit={handleSubmit}>
-              <div className="form-floating mb-3">
+        <section className="auth-shell-form">
+          <h3 className="mb-3">Doctor login</h3>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Email</label>
                 <input
                   type="email"
-                  className="form-control rounded-3"
+                className="form-control"
                   name="email"
                   placeholder="doctor@example.com"
                   value={doctor.email}
@@ -70,13 +66,13 @@ const DoctorLoginpage = () => {
                   disabled={isLoading}
                   autoComplete="email"
                 />
-                <label>Email address</label>
-              </div>
+            </div>
 
-              <div className="form-floating mb-3">
+            <div className="mb-3">
+              <label className="form-label">Password</label>
                 <input
                   type="password"
-                  className="form-control rounded-3"
+                className="form-control"
                   name="password"
                   placeholder="Password"
                   value={doctor.password}
@@ -84,36 +80,17 @@ const DoctorLoginpage = () => {
                   disabled={isLoading}
                   autoComplete="current-password"
                 />
-                <label>Password</label>
-              </div>
+            </div>
 
-              <button
-                type="submit"
-                className="w-100 btn btn-lg btn-primary"
-                disabled={isLoading}
-              >
-                {isLoading ? "Logging in..." : "Login as Doctor"}
-              </button>
-
-              <hr className="my-4" />
-
-              <div className="text-center">
-                <p>
-                  Not a doctor?{" "}
-                  <Link to="/login" className="text-primary">
-                    User login
-                  </Link>
-                </p>
-                <p>
-                  New doctor?{" "}
-                  <Link to="/register/doctor" className="text-primary">
-                    Register here
-                  </Link>
-                </p>
-              </div>
-            </form>
+            <button type="submit" className="btn btn-dark w-100 rounded-pill py-2" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Log in"}
+            </button>
+          </form>
+          <div className="mt-3 small text-muted">
+            Patient? <Link to="/login/user">User login</Link> | New doctor?{" "}
+            <Link to="/register/doctor">Register</Link>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

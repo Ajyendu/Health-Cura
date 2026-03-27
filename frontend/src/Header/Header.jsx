@@ -1,8 +1,9 @@
-import { MdOutlineSupportAgent, MdNotificationsNone } from "react-icons/md";
-import { RiSearch2Fill, RiHome9Fill } from "react-icons/ri";
-import { FaRegCalendarCheck } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { MdOutlineSupportAgent, MdNotificationsNone } from "react-icons/md";
+import { RiSearch2Fill, RiHome9Fill, RiUser3Line } from "react-icons/ri";
+import { FaRegCalendarCheck, FaHeartbeat } from "react-icons/fa";
+import { HiOutlineDocumentText, HiOutlineLogout } from "react-icons/hi";
 import { useUserAuth } from "@/Body/Auth/User/AuthContext";
 import { useDoctorAuth } from "@/Body/Auth/Doctor/AuthContext";
 
@@ -14,102 +15,74 @@ function Header() {
   const isDoctor = doctorAuth.isAuthenticated;
   const isAuthenticated = isUser || isDoctor;
 
-  // 🔔 Notification count (can be fetched from backend later)
-  const [unreadCount, setUnreadCount] = useState(2); // demo value
+  const [unreadCount, setUnreadCount] = useState(2);
 
-  useEffect(() => {
-    console.log("📍 Current path:", location.pathname);
-  }, [location]);
+  const navItems = useMemo(() => {
+    const base = [
+      { to: "/home", label: "Home", icon: <RiHome9Fill size={16} /> },
+      { to: "/search", label: "Find Doctors", icon: <RiSearch2Fill size={16} /> },
+      {
+        to: isDoctor ? "/doctor/dashboard" : "/appointments",
+        label: "Appointments",
+        icon: <FaRegCalendarCheck size={15} />,
+      },
+      {
+        to: isDoctor ? "/doctor/profile" : "/profile",
+        label: "Profile",
+        icon: <RiUser3Line size={15} />,
+      },
+      { to: "/help", label: "Help", icon: <MdOutlineSupportAgent size={16} /> },
+    ];
+
+    if (!isDoctor) {
+      base.splice(4, 0, {
+        to: "/records",
+        label: "Records",
+        icon: <HiOutlineDocumentText size={16} />,
+      });
+    }
+    return base;
+  }, [isDoctor]);
 
   return (
-    <div className="container">
-      <header
-        className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between fixed-top"
-        style={{ marginTop: "0px", paddingTop: "0px" }}
-      >
-        <div className="col-md-2 d-flex justify-content-start"></div>
-
-        {/* NAV ICONS */}
-        <ul
-          className="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0 shadow"
-          style={{
-            borderRadius: "20px",
-            borderTopLeftRadius: "0px",
-            borderTopRightRadius: "0px",
-            paddingTop: "15px",
-            paddingBottom: "5px",
-            backgroundColor: "rgba(255,255,255,0.6)",
-          }}
-        >
-          <li style={{ padding: "0px 30px" }}>
-            <Link className="nav-link px-2" to="/home">
-              <RiHome9Fill size={42} color="black" />
-            </Link>
-          </li>
-
-          <li style={{ padding: "0px 30px" }}>
-            <Link className="nav-link px-2" to="/search">
-              <RiSearch2Fill size={42} color="black" />
-            </Link>
-          </li>
-
-          <li style={{ padding: "0px 30px" }}>
+    <header className="app-header">
+      <div className="app-header-inner">
+        <Link to="/" className="app-brand">
+          <FaHeartbeat />
+          <span>HealthCura</span>
+        </Link>
+        <nav className="app-main-nav">
+          {navItems.map((item) => (
             <Link
-              className="nav-link px-2"
-              to={isDoctor ? "/doctor/dashboard" : "/appointments"}
+              key={item.to + item.label}
+              to={item.to}
+              className={`app-nav-pill ${location.pathname === item.to ? "active" : ""}`}
             >
-              <FaRegCalendarCheck size={42} color="black" />
+              {item.icon}
+              <span>{item.label}</span>
             </Link>
-          </li>
-
-          <li style={{ padding: "0px 30px" }}>
-            <Link className="nav-link px-2" to="/help">
-              <MdOutlineSupportAgent size={42} color="black" />
-            </Link>
-          </li>
-        </ul>
-
-        {/* RIGHT SIDE */}
-        <div className="col-md-2 d-flex align-items-center justify-content-end gap-2">
+          ))}
+        </nav>
+        <div className="app-header-actions">
           {isAuthenticated ? (
             <>
-              {/* 🔔 Notification Icon */}
               <Link
                 to="/help"
-                style={{ position: "relative", marginRight: "10px" }}
-                onClick={() => setUnreadCount(0)} // auto-clear
+                className="btn btn-outline-secondary btn-sm position-relative app-notify-btn"
+                onClick={() => setUnreadCount(0)}
               >
-                <MdNotificationsNone size={28} color="black" />
-
+                <MdNotificationsNone size={20} />
                 {unreadCount > 0 && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: "-4px",
-                      right: "-4px",
-                      backgroundColor: "#C62828",
-                      color: "white",
-                      fontSize: "10px",
-                      fontWeight: "bold",
-                      borderRadius: "50%",
-                      padding: "2px 6px",
-                      lineHeight: "1",
-                    }}
-                  >
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
                     {unreadCount}
                   </span>
                 )}
               </Link>
-
-              {/* LOGOUT */}
               <button
                 onClick={() => (isDoctor ? doctorAuth.logout() : userAuth.logout())}
-                className="btn btn-outline-primary"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.6)",
-                  marginRight: "10px",
-                }}
+                className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
               >
+                <HiOutlineLogout size={16} />
                 Logout
               </button>
             </>
@@ -117,19 +90,18 @@ function Header() {
             <>
               <Link
                 to="/login/user"
-                className="btn btn-outline-primary"
-                style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
+                className="btn btn-outline-primary btn-sm"
               >
                 Login
               </Link>
-              <Link to="/register" className="btn btn-primary">
+              <Link to="/register" className="btn btn-primary btn-sm">
                 Register
               </Link>
             </>
           )}
         </div>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 }
 

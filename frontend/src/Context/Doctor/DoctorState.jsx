@@ -42,7 +42,9 @@ const DoctorState = (props) => {
   const logout = async () => {
     try {
       await authApi.logout();
-    } catch {}
+    } catch (error) {
+      console.error("DoctorState logout failed:", error);
+    }
     setDoctor(null);
     authLogout();
   };
@@ -52,7 +54,10 @@ const DoctorState = (props) => {
     try {
       const payload = await authApi.me();
       setDoctor(payload.data?.role === "doctor" ? payload.data : null);
-    } catch {}
+    } catch (error) {
+      console.error("DoctorState getProfile failed:", error);
+      setDoctor(null);
+    }
   };
 
   // ✅ DOCTOR REGISTER

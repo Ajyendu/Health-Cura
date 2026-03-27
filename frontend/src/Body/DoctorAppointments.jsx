@@ -15,22 +15,6 @@ const DoctorAppointments = () => {
     setAppointments(data);
   };
 
-  const acceptAppointment = async (id) => {
-    await fetch(`http://localhost:8005/appointment/${id}/accept`, {
-      method: "PUT",
-      credentials: "include",
-    });
-    fetchAppointments(); // refresh UI
-  };
-
-  const rejectAppointment = async (id) => {
-    await fetch(`http://localhost:8005/appointment/${id}/reject`, {
-      method: "PUT",
-      credentials: "include",
-    });
-    fetchAppointments();
-  };
-
   const updateStatus = async (id, action) => {
     await fetch(`http://localhost:8005/appointment/${id}/${action}`, {
       method: "PUT",

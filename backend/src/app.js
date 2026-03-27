@@ -1,6 +1,8 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 const env = require("./config/env");
 const v1Routes = require("./routes/v1");
@@ -8,6 +10,16 @@ const errorHandler = require("./common/middleware/errorHandler");
 const notFound = require("./common/middleware/notFound");
 
 const app = express();
+
+app.use(helmet());
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 400,
+    standardHeaders: true,
+    legacyHeaders: false,
+  })
+);
 
 app.use(
   cors({

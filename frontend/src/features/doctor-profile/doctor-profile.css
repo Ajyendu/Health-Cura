@@ -1,0 +1,39 @@
+.doctor-profile-hero {
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #f9fbff, #eef4ff);
+}
+
+.doctor-profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 1px solid #dbe3ef;
+}
+
+.doctor-profile-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.doctor-profile-stat {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.7rem;
+  background: #fff;
+  text-align: center;
+}
+
+.doctor-profile-stat strong {
+  display: block;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.doctor-slot-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.5rem;
+}

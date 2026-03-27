@@ -1,5 +1,6 @@
 import Search from "./Search";
 import docprofile from "./doctorData";
+import { useDoctorAuth } from "@/Body/Auth/Doctor/AuthContext";
 
 // Debug: Check if data is loading
 console.log(

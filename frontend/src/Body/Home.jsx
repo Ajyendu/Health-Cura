@@ -1,173 +1,58 @@
+import { Link } from "react-router-dom";
+
 function Home() {
+  const highlights = [
+    "Discover doctors by specialization and distance",
+    "Book slots for self or family profiles",
+    "Manage appointments and medical records in one dashboard",
+  ];
+
+  const specialties = [
+    "General Physician",
+    "Cardiology",
+    "Dermatology",
+    "Pediatrics",
+    "Neurology",
+    "Orthopedics",
+  ];
+
   return (
-    <div>
-      {/* Featured Specialists Section */}
-      <div className="container px-4 py-5" id="featured-specialists">
-        <div>
-          <img
-            src="logo.png"
-            alt="Logo"
-            width="300"
-            height="150"
-            style={{ marginBottom: "60px", marginTop: "20px" }}
-          />
+    <div className="app-page">
+      <section className="p-4 p-md-5 rounded-4 border bg-white mb-3">
+        <h1 className="display-6 fw-bold mb-2">Healthcare booking made simple</h1>
+        <p className="text-muted mb-3">
+          A complete patient and doctor platform for search, booking, profile and records.
+        </p>
+        <div className="d-flex flex-wrap gap-2">
+          <Link to="/search" className="btn btn-primary">
+            Find Doctors
+          </Link>
+          <Link to="/appointments" className="btn btn-outline-primary">
+            My Appointments
+          </Link>
         </div>
-        <h2 className="pb-2 border-bottom">Featured Specialists</h2>
+      </section>
 
-        <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-          {[
-            {
-              title: "General Physicians",
-              img: "physician.jpg",
-            },
-            {
-              title: "Dentists",
-              img: "dentist.jpg",
-            },
-            {
-              title: "Cardiologists",
-              img: "cardiologists.jpg",
-            },
-          ].map((specialist, index) => (
-            <div className="col" key={index}>
-              <div
-                className="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                style={{
-                  backgroundImage: `url('${specialist.img}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundColor: "rgba(0,0,0,0.6)",
-                  backgroundBlendMode: "overlay",
-                }}
-              >
-                <div className="d-flex flex-column h-100 p-6 pb-3 text-white text-shadow-1">
-                  <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
-                    {specialist.title}
-                  </h3>
-                  <ul className="d-flex list-unstyled mt-auto">
-                    <li className="me-auto"></li>
-                    <li className="d-flex align-items-center me-3">
-                      <svg className="bi me-2" width="1em" height="1em">
-                        <use xlinkHref="#geo-fill"></use>
-                      </svg>
-                      <small>{specialist.location}</small>
-                    </li>
-                    <li className="d-flex align-items-center">
-                      <svg className="bi me-2" width="1em" height="1em">
-                        <use xlinkHref="#calendar3"></use>
-                      </svg>
-                      <small>{specialist.days}</small>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+      <section className="row g-3 mb-3">
+        {highlights.map((item) => (
+          <div className="col-md-4" key={item}>
+            <div className="h-100 rounded-4 border bg-white p-3">
+              <p className="mb-0">{item}</p>
             </div>
+          </div>
+        ))}
+      </section>
+
+      <section className="rounded-4 border bg-white p-3 p-md-4">
+        <h5 className="mb-3">Popular specialties</h5>
+        <div className="d-flex flex-wrap gap-2">
+          {specialties.map((item) => (
+            <span key={item} className="badge text-bg-light border px-3 py-2">
+              {item}
+            </span>
           ))}
         </div>
-        <h5 className="pb-2 underline">
-          <a href="#">More</a>
-        </h5>
-      </div>
-
-      {/* Features Section */}
-      <div className="container px-4 py-5" id="features">
-        <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-          {[
-            {
-              title: "Find Top Doctors",
-              desc: "Search and connect with expert doctors in your area or globally. Verified profiles ensure trusted healthcare.",
-              icon: "#collection",
-              link: "Explore Now",
-            },
-            {
-              title: "Book Appointments",
-              desc: "Schedule appointments easily with just a few clicks. Choose a convenient time that works for you.",
-              icon: "#people-circle",
-              link: "Book Now",
-            },
-            {
-              title: "24/7 Healthcare Access",
-              desc: "Get healthcare support anytime, anywhere. Connect with doctors online or in-person at your convenience.",
-              icon: "#toggles2",
-              link: "Learn More",
-            },
-          ].map((feature, index) => (
-            <div className="feature col" key={index}>
-              <div className="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
-                <svg className="bi" width="1em" height="1em">
-                  <use xlinkHref={feature.icon}></use>
-                </svg>
-              </div>
-              <h3 className="fs-2 text-body-emphasis">{feature.title}</h3>
-              <p>{feature.desc}</p>
-              <a href="#" className="icon-link">
-                {feature.link}
-                <svg className="bi">
-                  <use xlinkHref="#chevron-right"></use>
-                </svg>
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* User Benefits Section */}
-      <div className="container px-4 py-5" id="user-benefits">
-        <h2 className="pb-2 border-bottom">User Benefits</h2>
-
-        <div className="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-          {[
-            {
-              title: "Verified Doctors",
-              img: "verified.jpg",
-            },
-            {
-              title: "Global Access",
-              img: "globe.jpg",
-            },
-            {
-              title: "24*7 Booking",
-              img: "24*7.jpg",
-            },
-          ].map((benefit, index) => (
-            <div className="col" key={index}>
-              <div
-                className="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg"
-                style={{
-                  backgroundImage: `url('${benefit.img}')`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundColor: "rgba(0,0,0,0.6)",
-                  backgroundBlendMode: "overlay",
-                }}
-              >
-                <div className="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                  <h3 className="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
-                    {benefit.title}
-                  </h3>
-                  <ul className="d-flex list-unstyled mt-auto">
-                    <li className="me-auto"></li>
-                    <li className="d-flex align-items-center me-3">
-                      <svg className="bi me-2" width="1em" height="1em">
-                        <use xlinkHref="#geo-fill"></use>
-                      </svg>
-                      <small>{benefit.location}</small>
-                    </li>
-                    <li className="d-flex align-items-center">
-                      <svg className="bi me-2" width="1em" height="1em">
-                        <use xlinkHref="#calendar3"></use>
-                      </svg>
-                      <small>{benefit.days}</small>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

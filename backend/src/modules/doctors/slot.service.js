@@ -35,22 +35,35 @@ const generateDoctorSlots = async (doctor, date) => {
     .select("startAt")
     .lean();
 
-  const bookedSet = new Set(booked.map((item) => new Date(item.startAt).toISOString()));
+  const bookedCountByStart = booked.reduce((acc, item) => {
+    const key = new Date(item.startAt).toISOString();
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
   const slots = [];
-
   windows.forEach((window) => {
     const start = toDate(date, window.start);
     const end = toDate(date, window.end);
-    const step = doctor.slotDurationMinutes * 60 * 1000;
+    const step = (Number(doctor.slotDurationMinutes) || 30) * 60 * 1000;
+    const slotCapacity = Math.max(1, Number(window.capacity) || 1);
 
     for (let t = start.getTime(); t + step <= end.getTime(); t += step) {
       const slotStart = new Date(t);
       const slotEnd = new Date(t + step);
+      if (slotStart.getTime() <= Date.now()) {
+        continue;
+      }
+      const slotKey = slotStart.toISOString();
+      const bookedCount = bookedCountByStart[slotKey] || 0;
+      const remainingSlots = Math.max(0, slotCapacity - bookedCount);
       slots.push({
-        startAt: slotStart.toISOString(),
+        startAt: slotKey,
         endAt: slotEnd.toISOString(),
         label: `${formatTime(slotStart)} - ${formatTime(slotEnd)}`,
-        isAvailable: !bookedSet.has(slotStart.toISOString()),
+        configuredSlots: slotCapacity,
+        totalSlots: slotCapacity,
+        remainingSlots,
+        isAvailable: remainingSlots > 0,
       });
     }
   });
