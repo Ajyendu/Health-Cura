@@ -1,7 +1,7 @@
 /**
- * Vercel serverless proxy: forwards /api/v1/* to BACKEND_ORIGIN (e.g. Render API).
- * Set BACKEND_ORIGIN in Vercel → Environment Variables (e.g. https://your-api.onrender.com).
- * Build the frontend with VITE_API_BASE_URL=/api/v1 so the browser stays same-origin.
+ * Vercel serverless proxy (deploy when Project Root / Root Directory = `frontend`).
+ * Forwards /api/v1/* → BACKEND_ORIGIN. Set BACKEND_ORIGIN in Vercel env (e.g. https://xxx.onrender.com).
+ * Build with VITE_API_BASE_URL=/api/v1
  */
 
 const MAX_BODY = 12 * 1024 * 1024;
