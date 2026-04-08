@@ -1,0 +1,10 @@
+# Render: use a Static Site for the Vite app (no `npm start`; avoids dev servers + OOM).
+# Dashboard → New → Static Site → connect repo, or use Blueprint from this file.
+#
+# API: create a separate Web Service with root `start` = `npm run start` (runs Node API only).
+services:
+  - type: web
+    name: healthcura-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: frontend/dist
