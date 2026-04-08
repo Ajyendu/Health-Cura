@@ -1,7 +1,9 @@
 # Render: use a Static Site for the Vite app (no `npm start`; avoids dev servers + OOM).
 # Dashboard → New → Static Site → connect repo, or use Blueprint from this file.
 #
-# API: create a separate Web Service with root `start` = `npm run start` (runs Node API only).
+# API Web Service: Build `npm install`, Start `npm run start`.
+# Required env: MONGO_URI (Render MongoDB or Atlas), JWT_SECRET, FRONTEND_ORIGIN (your static URL),
+# NODE_ENV=production. Optional: PORT (Render sets automatically).
 services:
   - type: web
     name: healthcura-frontend
