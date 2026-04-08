@@ -1,20 +1,29 @@
 /**
- * Vercel serverless proxy: forwards /api/v1/* to BACKEND_ORIGIN (e.g. Render API).
- * Set BACKEND_ORIGIN in Vercel → Environment Variables (e.g. https://your-api.onrender.com).
- * Build the frontend with VITE_API_BASE_URL=/api/v1 so the browser stays same-origin.
+ * Vercel: single catch-all for /api/*. Set BACKEND_ORIGIN (e.g. https://xxx.onrender.com).
+ * Use when Project Root = `frontend`. Build with VITE_API_BASE_URL=/api/v1
  */
-
 const MAX_BODY = 12 * 1024 * 1024;
 
-function requestPath(req) {
-  const raw = req.url || "";
-  if (raw.startsWith("/api/v1")) {
-    return raw;
+function fullApiPath(req) {
+  const url = req.url || "/";
+  if (url.startsWith("/api/")) {
+    return url;
   }
-  const slug = req.query?.slug;
-  const tail = Array.isArray(slug) ? slug.join("/") : slug || "";
-  const q = raw.includes("?") ? raw.slice(raw.indexOf("?")) : "";
-  return `/api/v1/${tail}${q}`;
+  const q = url.includes("?") ? url.slice(url.indexOf("?")) : "";
+  const pathname = url.split("?")[0] || "/";
+
+  const parts = req.query?.path;
+  const fromQuery = Array.isArray(parts) ? parts.join("/") : parts || "";
+  if (fromQuery) {
+    return `/api/${fromQuery}${q}`;
+  }
+
+  if (pathname && pathname !== "/" && !pathname.startsWith("/api")) {
+    const p = pathname.startsWith("/") ? pathname : `/${pathname}`;
+    return `/api${p}${q}`;
+  }
+
+  return `/api${q}`;
 }
 
 async function handler(req, res) {
@@ -28,9 +37,9 @@ async function handler(req, res) {
     return;
   }
 
-  const path = requestPath(req);
+  const path = fullApiPath(req);
   if (!path.startsWith("/api/v1")) {
-    res.status(404).end();
+    res.status(404).json({ success: false, message: "Not found" });
     return;
   }
 
@@ -79,7 +88,7 @@ async function handler(req, res) {
     res.status(502).json({
       success: false,
       message: "Upstream request failed",
-      details: process.env.NODE_ENV === "development" ? String(e?.message || e) : undefined,
+      details: process.env.VERCEL_ENV === "development" ? String(e?.message || e) : undefined,
     });
     return;
   }
@@ -98,7 +107,7 @@ async function handler(req, res) {
     try {
       res.setHeader(key, value);
     } catch {
-      /* ignore invalid header names */
+      /* ignore */
     }
   });
 
