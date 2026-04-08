@@ -1,17 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { doctorsApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import ConsoleLayout from "@/shared/layout/ConsoleLayout";
-
-const toApiOrigin = () => {
-  const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1";
-  return base.replace(/\/api\/v1\/?$/, "");
-};
 
 const DoctorAccountProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [message, setMessage] = useState("");
-  const apiOrigin = useMemo(() => toApiOrigin(), []);
+  const apiOrigin = useMemo(() => backendOrigin(), []);
 
   const loadProfile = async () => {
     try {

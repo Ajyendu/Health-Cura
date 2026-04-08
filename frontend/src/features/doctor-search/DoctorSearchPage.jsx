@@ -17,6 +17,7 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { doctorsApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import "./doctor-search.css";
 
 const defaultIcon = L.icon({
@@ -51,10 +52,6 @@ const SPECIALIZATION_OPTIONS = [
   "ENT Specialist",
   "Psychiatrist",
 ];
-
-const API_ORIGIN = (
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1"
-).replace(/\/api\/v1\/?$/, "");
 
 const MapAutoFit = ({ doctors, userLatLng }) => {
   const map = useMap();
@@ -519,7 +516,7 @@ const DoctorSearchPage = () => {
           const mapUrl =
             lat && lng ? `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}` : null;
           const imageUrl = doctor.photoUrl
-            ? `${API_ORIGIN}${doctor.photoUrl}`
+            ? `${backendOrigin()}${doctor.photoUrl}`
             : "https://via.placeholder.com/80x80?text=Dr";
 
           return (

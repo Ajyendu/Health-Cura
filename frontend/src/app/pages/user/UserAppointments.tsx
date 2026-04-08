@@ -27,6 +27,7 @@ import {
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { appointmentsApi, doctorsApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import { withDrPrefix } from "@/shared/utils/doctorName";
 
 interface AppointmentVm {
@@ -59,10 +60,7 @@ export default function UserAppointments() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const apiOrigin = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1").replace(
-    /\/api\/v1\/?$/,
-    ""
-  );
+  const apiOrigin = useMemo(() => backendOrigin(), []);
 
   const loadAppointments = useCallback(async (silent = false) => {
     try {

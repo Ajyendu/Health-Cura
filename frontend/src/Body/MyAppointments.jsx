@@ -10,7 +10,7 @@ const MyAppointments = () => {
 
   const fetchAppointments = async () => {
     try {
-      const res = await fetch("http://localhost:8005/appointment/user", {
+      const res = await fetch("/appointment/user", {
         credentials: "include",
       });
       const data = await res.json();

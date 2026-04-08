@@ -8,7 +8,7 @@ const DoctorAppointments = () => {
   }, []);
 
   const fetchAppointments = async () => {
-    const res = await fetch("http://localhost:8005/appointment/doctor", {
+    const res = await fetch("/appointment/doctor", {
       credentials: "include", // doctor cookie
     });
     const data = await res.json();
@@ -16,7 +16,7 @@ const DoctorAppointments = () => {
   };
 
   const updateStatus = async (id, action) => {
-    await fetch(`http://localhost:8005/appointment/${id}/${action}`, {
+    await fetch(`/appointment/${id}/${action}`, {
       method: "PUT",
       credentials: "include",
     });

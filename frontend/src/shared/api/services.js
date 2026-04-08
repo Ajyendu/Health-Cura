@@ -1,4 +1,5 @@
-import { request, uploadRequest } from "./client";
+import { request, requestUnless, uploadRequest } from "./client";
+import { API_V1_BASE } from "./envPublic.js";
 
 export const authApi = {
   registerUser: (payload) =>
@@ -10,7 +11,8 @@ export const authApi = {
   loginDoctor: (payload) =>
     request("/auth/login/doctor", { method: "POST", body: payload }),
   logout: () => request("/auth/logout", { method: "POST" }),
-  me: () => request("/auth/me"),
+  /** 401 = not signed in; returns null (not an error). */
+  me: () => requestUnless("/auth/me", [401]),
 };
 
 export const doctorsApi = {
@@ -37,14 +39,15 @@ export const appointmentsApi = {
     }),
   complete: (id) => request(`/appointments/${id}/complete`, { method: "PATCH" }),
   subscribe: (onEvent, onError) => {
-    const base = import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1";
-    const streamUrl = `${base.replace(/\/$/, "")}/appointments/stream`;
+    const streamUrl = `${API_V1_BASE.replace(/\/$/, "")}/appointments/stream`;
     const stream = new EventSource(streamUrl, { withCredentials: true });
     stream.addEventListener("appointment-update", (event) => {
       try {
         const payload = JSON.parse(event.data);
         onEvent?.(payload);
-      } catch {}
+      } catch {
+        // Ignore malformed JSON from the SSE stream.
+      }
     });
     stream.onerror = () => {
       onError?.();
@@ -70,7 +73,5 @@ export const recordsApi = {
   upload: (formData) => uploadRequest("/records/upload", formData),
   delete: (id) => request(`/records/${id}`, { method: "DELETE" }),
   downloadUrl: (id) =>
-    `${
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1"
-    }/records/${id}/download`,
+    `${API_V1_BASE.replace(/\/$/, "")}/records/${id}/download`,
 };

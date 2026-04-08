@@ -11,6 +11,9 @@ const notFound = require("./common/middleware/notFound");
 
 const app = express();
 
+// Vite (and other reverse proxies) set X-Forwarded-For; rate-limit v8+ validates this.
+app.set("trust proxy", 1);
+
 app.use(helmet());
 app.use(
   rateLimit({

@@ -66,19 +66,21 @@ test("prevents double booking for same doctor slot", async () => {
 
   const doctor = await Doctor.findOne({ email: doctorEmail });
   const date = futureDay();
+  const window = { start: "09:00", end: "11:00", capacity: 1 };
   await Doctor.updateOne(
     { _id: doctor._id },
     {
       $set: {
-        availabilityWeekly: [
-          { dayOfWeek: 0, start: "09:00", end: "11:00" },
-          { dayOfWeek: 1, start: "09:00", end: "11:00" },
-          { dayOfWeek: 2, start: "09:00", end: "11:00" },
-          { dayOfWeek: 3, start: "09:00", end: "11:00" },
-          { dayOfWeek: 4, start: "09:00", end: "11:00" },
-          { dayOfWeek: 5, start: "09:00", end: "11:00" },
-          { dayOfWeek: 6, start: "09:00", end: "11:00" },
-        ],
+        specialization: "General Practice",
+        qualifications: "MD",
+        licenseNumber: `LIC-TEST-${Date.now()}`,
+        consultationFee: 100,
+        verified: true,
+        location: { type: "Point", coordinates: [-74.006, 40.7128] },
+        availabilityWeekly: [0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => ({
+          dayOfWeek,
+          ...window,
+        })),
         slotDurationMinutes: 30,
       },
     }

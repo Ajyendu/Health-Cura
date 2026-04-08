@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { appointmentsApi, doctorsApi, profileApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import { useUserAuth } from "@/Body/Auth/User/AuthContext";
 import "./doctor-profile.css";
 
@@ -16,9 +17,7 @@ const DoctorProfilePage = () => {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [reason, setReason] = useState("General consultation");
   const [message, setMessage] = useState("");
-  const apiOrigin = (
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1"
-  ).replace(/\/api\/v1\/?$/, "");
+  const apiOrigin = backendOrigin();
 
   useEffect(() => {
     const run = async () => {

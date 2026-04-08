@@ -9,7 +9,7 @@ const Search = () => {
   // Fetch real doctors from your backend
   const bookAppointment = async (doctorId) => {
     try {
-      const res = await fetch("http://localhost:8005/appointment/request", {
+      const res = await fetch("/appointment/request", {
         method: "POST",
         credentials: "include", // 🔥 sends userToken cookie
         headers: {
@@ -41,7 +41,7 @@ const Search = () => {
     const fetchRealDoctors = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:8005/doctor/", {
+        const response = await fetch("/doctor/", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

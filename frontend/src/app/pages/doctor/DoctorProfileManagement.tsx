@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { doctorsApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -118,14 +119,7 @@ export default function DoctorProfileManagement() {
   });
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState("");
-  const apiOrigin = useMemo(
-    () =>
-      (import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1").replace(
-        /\/api\/v1\/?$/,
-        ""
-      ),
-    []
-  );
+  const apiOrigin = useMemo(() => backendOrigin(), []);
 
   useEffect(() => {
     doctorsApi

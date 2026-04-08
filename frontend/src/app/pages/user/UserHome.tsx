@@ -18,6 +18,7 @@ import { Calendar } from "../../components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover";
 import { Search, MapPin, RotateCcw, Map, Grid3x3, Calendar as CalendarIcon } from "lucide-react";
 import { doctorsApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import { withDrPrefix } from "@/shared/utils/doctorName";
 import { format } from "date-fns";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
@@ -329,12 +330,7 @@ export default function UserHome() {
         name: withDrPrefix(doctor.name),
         specialization: doctor.specialization,
         image: doctor.photoUrl
-          ? `${
-              (import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1").replace(
-                /\/api\/v1\/?$/,
-                ""
-              )
-            }${doctor.photoUrl}`
+          ? `${backendOrigin()}${doctor.photoUrl}`
           : "https://via.placeholder.com/200x200?text=Doctor",
         location: doctor.locationName || "Location not set by doctor yet",
         fee: doctor.consultationFee ?? null,

@@ -31,6 +31,7 @@ import {
 import { toast } from "sonner";
 import { format, addDays } from "date-fns";
 import { appointmentsApi, doctorsApi, profileApi } from "@/shared/api/services";
+import { backendOrigin } from "@/shared/api/envPublic";
 import { withDrPrefix } from "@/shared/utils/doctorName";
 import { useUserAuth } from "@/Body/Auth/User/AuthContext";
 import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
@@ -80,14 +81,7 @@ export default function DoctorProfile() {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(
     null
   );
-  const apiOrigin = useMemo(
-    () =>
-      (import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1").replace(
-        /\/api\/v1\/?$/,
-        ""
-      ),
-    []
-  );
+  const apiOrigin = useMemo(() => backendOrigin(), []);
 
   useEffect(() => {
     if (!id) return;

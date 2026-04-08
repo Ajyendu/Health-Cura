@@ -1,8 +1,15 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8005/api/v1";
+import { API_V1_BASE } from "./envPublic.js";
+
+const API_BASE_URL = API_V1_BASE;
 
 const buildUrl = (path, query = null) => {
-  const url = new URL(`${API_BASE_URL}${path}`);
+  const base = API_BASE_URL.replace(/\/$/, "");
+  const suffix = path.startsWith("/") ? path : `/${path}`;
+  const combined = `${base}${suffix}`;
+  const url =
+    /^https?:\/\//i.test(API_BASE_URL)
+      ? new URL(combined)
+      : new URL(combined, globalThis.location?.origin ?? "http://localhost:5173");
   if (query) {
     Object.entries(query).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
@@ -30,6 +37,41 @@ export const request = async (path, options = {}) => {
     payload = await response.json();
   } catch {
     payload = null;
+  }
+
+  if (!response.ok) {
+    const message = payload?.message || payload?.error || "Request failed";
+    const error = new Error(message);
+    error.status = response.status;
+    error.payload = payload;
+    throw error;
+  }
+
+  return payload;
+};
+
+/** Same as request(), but returns null for `nullStatuses` (no throw). Use for session probes. */
+export const requestUnless = async (path, nullStatuses, options = {}) => {
+  const { query, body, headers, ...rest } = options;
+  const response = await fetch(buildUrl(path, query), {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...headers,
+    },
+    ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    ...rest,
+  });
+
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch {
+    payload = null;
+  }
+
+  if (nullStatuses.includes(response.status)) {
+    return null;
   }
 
   if (!response.ok) {

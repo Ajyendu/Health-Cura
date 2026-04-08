@@ -53,7 +53,7 @@ const DoctorState = (props) => {
   const getProfile = async () => {
     try {
       const payload = await authApi.me();
-      setDoctor(payload.data?.role === "doctor" ? payload.data : null);
+      setDoctor(payload?.data?.role === "doctor" ? payload.data : null);
     } catch (error) {
       console.error("DoctorState getProfile failed:", error);
       setDoctor(null);
