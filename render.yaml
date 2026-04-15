@@ -1,7 +1,7 @@
 # Render: use a Static Site for the Vite app (no `npm start`; avoids dev servers + OOM).
 # Dashboard → New → Static Site → connect repo, or use Blueprint from this file.
 #
-# API Web Service: Build `npm install`, Start `npm run start`.
+# API Web Service: Build `npm install; npm run build` (frontend needs --include=dev for Vite; root package.json handles it).
 # Required env: MONGO_URI (Render MongoDB or Atlas), JWT_SECRET, FRONTEND_ORIGIN (your static URL),
 # NODE_ENV=production. Optional: PORT (Render sets automatically).
 services:
